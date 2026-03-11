@@ -90,7 +90,7 @@ $isAdminPage = strpos($_SERVER['PHP_SELF'], '/admin/') !== false;
         <div class="container navbar-inner">
             <a href="index.php" class="navbar-brand">
                  <img 
-        src="=/assets/images/ORACLE_sigil.png" 
+        src="/assets/images/ORACLE_sigil.png" 
         alt="Avaritia" 
         class="brand-icon"
         style="width:28px; height:28px; object-fit:contain; vertical-align:middle;"
