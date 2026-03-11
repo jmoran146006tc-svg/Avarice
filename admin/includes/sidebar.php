@@ -6,12 +6,12 @@
 $currentPage = basename($_SERVER['PHP_SELF']);
 $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
 
-function adminNavLink(string $href, string $icon, string $label, string $current): string {
+function adminNavLink(string $href, string $label, string $current): string {
     $file    = basename($href);
     $active  = ($file === $current) ? 'active' : '';
     $siteUrl = SITE_URL;
     return "<a href=\"{$siteUrl}/admin/{$href}\" class=\"{$active}\">
-        <span style=\"font-size:1rem;\">{$icon}</span> {$label}
+        <span style=\"font-size:1rem;\"></span> {$label}
     </a>";
 }
 ?>
@@ -27,30 +27,30 @@ function adminNavLink(string $href, string $icon, string $label, string $current
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">Catalogue</div>
     <nav class="admin-nav">
-      <?= adminNavLink('artifacts.php', '', 'Artifacts',   $currentPage) ?>
-      <?= adminNavLink('auctions.php',  '', 'Auctions',    $currentPage) ?>
-      <?= adminNavLink('flagged.php',   '',  'Flagged Items', $currentPage) ?>
+      <?= adminNavLink('artifacts.php', 'Artifacts',   $currentPage) ?>
+      <?= adminNavLink('auctions.php',  'Auctions',    $currentPage) ?>
+      <?= adminNavLink('flagged.php',      'Flagged Items', $currentPage) ?>
     </nav>
   </div>
 
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">People</div>
     <nav class="admin-nav">
-      <?= adminNavLink('users.php',  '', 'Users',   $currentPage) ?>
+      <?= adminNavLink('users.php',    'Users',   $currentPage) ?>
     </nav>
   </div>
 
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">Finance</div>
     <nav class="admin-nav">
-      <?= adminNavLink('reports.php', '', 'Sales Reports', $currentPage) ?>
+      <?= adminNavLink('reports.php',   'Sales Reports', $currentPage) ?>
     </nav>
   </div>
 
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">System</div>
     <nav class="admin-nav">
-      <?= adminNavLink('audit.php', '', 'Audit Log',  $currentPage) ?>
+      <?= adminNavLink('audit.php',   'Audit Log',  $currentPage) ?>
     </nav>
   </div>
 
