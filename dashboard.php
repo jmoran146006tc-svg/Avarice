@@ -67,22 +67,18 @@ require_once 'includes/header.php';
         <!-- Stats -->
         <div class="stat-grid">
             <div class="stat-card">
-                <div class="stat-card-icon">🎯</div>
                 <div class="stat-card-value"><?php echo $totalBids; ?></div>
                 <div class="stat-card-label">Total Bids</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-icon">⚡</div>
                 <div class="stat-card-value"><?php echo $activeBids; ?></div>
                 <div class="stat-card-label">Active Auctions</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-icon">🏆</div>
                 <div class="stat-card-value"><?php echo $totalWins; ?></div>
                 <div class="stat-card-label">Wins</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-icon">💎</div>
                 <div class="stat-card-value">$<?php echo number_format($totalSpent, 2); ?></div>
                 <div class="stat-card-label">Total Spent</div>
             </div>
@@ -142,7 +138,7 @@ require_once 'includes/header.php';
             </div>
             <?php if (empty($recentBids)): ?>
                 <div class="text-center" style="padding:var(--space-2xl); background:var(--bg-card); border-radius:var(--radius-lg);">
-                    <p style="font-size:2rem; margin-bottom:var(--space-md);">🏺</p>
+                    <i class="fa-solid fa-image"></i>
                     <p class="text-muted">You haven't placed any bids yet.</p>
                     <a href="catalog.php" class="btn btn-gold btn-sm mt-1">Browse Catalog</a>
                 </div>
