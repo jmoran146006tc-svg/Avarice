@@ -20,7 +20,7 @@ function adminNavLink(string $href, string $label, string $current): string {
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">Overview</div>
     <nav class="admin-nav">
-      <?= adminNavLink('index.php',    '⬡', 'Dashboard',    $currentPage) ?>
+      <?= adminNavLink('index.php', 'Dashboard',    $currentPage) ?>
     </nav>
   </div>
 
