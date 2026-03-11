@@ -29,9 +29,8 @@ function getDB(): PDO {
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
-            error_log("Database connection failed: " . $e->getMessage());
-            die("Database connection error. Please try again later.");
-        }
+    die("Connection failed: " . $e->getMessage());
+}
     }
     
     return $pdo;
