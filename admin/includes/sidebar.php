@@ -10,9 +10,7 @@ function adminNavLink(string $href, string $label, string $current): string {
     $file    = basename($href);
     $active  = ($file === $current) ? 'active' : '';
     $siteUrl = SITE_URL;
-    return "<a href=\"{$siteUrl}/admin/{$href}\" class=\"{$active}\">
-        <span style=\"font-size:1rem;\"></span> {$label}
-    </a>";
+    return "<a href=\"{$siteUrl}/admin/{$href}\" class=\"{$active}\">{$label}</a>";
 }
 ?>
 <aside class="admin-sidebar">
