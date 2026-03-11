@@ -1,13 +1,9 @@
 <?php
-var_dump(getenv('MYSQL_HOST'));
-var_dump(getenv('MYSQL_PORT'));
-die();
-
-define('DB_HOST',    getenv('MYSQL_HOST'));
-define('DB_PORT',    getenv('MYSQL_PORT') ?: '3306');
-define('DB_NAME',    getenv('MYSQL_DATABASE'));
-define('DB_USER',    getenv('MYSQL_USER'));
-define('DB_PASS',    getenv('MYSQL_PASSWORD'));
+define('DB_HOST',    $_ENV['MYSQL_HOST'] ?? getenv('MYSQL_HOST'));
+define('DB_PORT',    $_ENV['MYSQL_PORT'] ?? getenv('MYSQL_PORT') ?: '3306');
+define('DB_NAME',    $_ENV['MYSQL_DATABASE'] ?? getenv('MYSQL_DATABASE'));
+define('DB_USER',    $_ENV['MYSQL_USER'] ?? getenv('MYSQL_USER'));
+define('DB_PASS',    $_ENV['MYSQL_PASSWORD'] ?? getenv('MYSQL_PASSWORD'));
 define('DB_CHARSET', 'utf8mb4');
 
 /**

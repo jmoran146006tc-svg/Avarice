@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql mysqli \
     && rm -rf /var/lib/apt/lists/*
 
+COPY php.ini /usr/local/etc/php/php.ini
 COPY . /app/public
 
 EXPOSE 8080
