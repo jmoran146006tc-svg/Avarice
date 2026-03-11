@@ -27,30 +27,30 @@ function adminNavLink(string $href, string $icon, string $label, string $current
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">Catalogue</div>
     <nav class="admin-nav">
-      <?= adminNavLink('artifacts.php', '🏺', 'Artifacts',   $currentPage) ?>
-      <?= adminNavLink('auctions.php',  '🔨', 'Auctions',    $currentPage) ?>
-      <?= adminNavLink('flagged.php',   '⚑',  'Flagged Items', $currentPage) ?>
+      <?= adminNavLink('artifacts.php', '', 'Artifacts',   $currentPage) ?>
+      <?= adminNavLink('auctions.php',  '', 'Auctions',    $currentPage) ?>
+      <?= adminNavLink('flagged.php',   '',  'Flagged Items', $currentPage) ?>
     </nav>
   </div>
 
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">People</div>
     <nav class="admin-nav">
-      <?= adminNavLink('users.php',  '👤', 'Users',   $currentPage) ?>
+      <?= adminNavLink('users.php',  '', 'Users',   $currentPage) ?>
     </nav>
   </div>
 
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">Finance</div>
     <nav class="admin-nav">
-      <?= adminNavLink('reports.php', '📊', 'Sales Reports', $currentPage) ?>
+      <?= adminNavLink('reports.php', '', 'Sales Reports', $currentPage) ?>
     </nav>
   </div>
 
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">System</div>
     <nav class="admin-nav">
-      <?= adminNavLink('audit.php', '📋', 'Audit Log',  $currentPage) ?>
+      <?= adminNavLink('audit.php', '', 'Audit Log',  $currentPage) ?>
     </nav>
   </div>
 

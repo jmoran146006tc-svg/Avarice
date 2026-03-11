@@ -48,32 +48,26 @@ require_once __DIR__ . '/../includes/header.php';
 <!-- Stats Grid -->
 <div class="stat-grid">
     <div class="stat-card">
-        <div class="stat-card-icon">👥</div>
         <div class="stat-card-value"><?php echo number_format($stats['users']); ?></div>
         <div class="stat-card-label">Active Users</div>
     </div>
     <div class="stat-card">
-        <div class="stat-card-icon">🏺</div>
         <div class="stat-card-value"><?php echo number_format($stats['artifacts']); ?></div>
         <div class="stat-card-label">Artifacts</div>
     </div>
     <div class="stat-card">
-        <div class="stat-card-icon">🔨</div>
         <div class="stat-card-value"><?php echo number_format($stats['active_auctions']); ?></div>
         <div class="stat-card-label">Active Auctions</div>
     </div>
     <div class="stat-card">
-        <div class="stat-card-icon">💰</div>
         <div class="stat-card-value">$<?php echo number_format($stats['total_revenue'], 2); ?></div>
         <div class="stat-card-label">Total Revenue</div>
     </div>
     <div class="stat-card">
-        <div class="stat-card-icon">📋</div>
         <div class="stat-card-value"><?php echo number_format($stats['open_reports']); ?></div>
         <div class="stat-card-label">Open Reports</div>
     </div>
     <div class="stat-card">
-        <div class="stat-card-icon">🚩</div>
         <div class="stat-card-value"><?php echo number_format($stats['pending_flags']); ?></div>
         <div class="stat-card-label">Pending Flags</div>
     </div>
