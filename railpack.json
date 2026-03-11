@@ -1,5 +1,11 @@
 {
-  "php": {
-    "extensions": ["pdo_mysql", "mysqli", "pdo"]
+  "phases": {
+    "prepare": {
+      "cmds": [
+        "mkdir -p /usr/local/etc/php/conf.d",
+        "mkdir -p /conf.d/",
+        "docker-php-ext-install pdo pdo_mysql mysqli"
+      ]
+    }
   }
 }
