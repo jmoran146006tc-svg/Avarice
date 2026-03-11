@@ -1,8 +1,7 @@
 <?php
-/**
- * Avaritia — Database Connection
- * PDO-based MySQL connection with error handling
- */
+var_dump(getenv('MYSQL_HOST'));
+var_dump(getenv('MYSQL_PORT'));
+die();
 
 define('DB_HOST',    getenv('MYSQL_HOST'));
 define('DB_PORT',    getenv('MYSQL_PORT') ?: '3306');
