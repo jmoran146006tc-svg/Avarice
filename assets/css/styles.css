@@ -938,7 +938,6 @@ tr:hover td {
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     padding: var(--space-xl);
-    position: sticky;
     top: calc(var(--navbar-height) + var(--space-lg));
 }
 
