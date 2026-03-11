@@ -1,0 +1,10 @@
+FROM dunglas/frankenphp:php8.4.18-bookworm
+
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql mysqli \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+
+EXPOSE 80
