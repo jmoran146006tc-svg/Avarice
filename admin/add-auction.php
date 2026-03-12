@@ -36,10 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $messageType = 'error';
         } else {
             $stmt = $db->prepare("
-                INSERT INTO auctions
-                    (artifact_id, seller_id, title, description, starting_price, current_price, bid_increment, end_time, status, created_at)
-                VALUES
-                    (?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW())
+INSERT INTO auctions
+    (artifact_id, seller_id, title, description, starting_price, current_price, bid_increment, start_time, end_time, status, created_at)
+VALUES
+    (?, ?, ?, ?, ?, ?, ?, NOW(), ?, 'active', NOW())
             ");
             $stmt->execute([
                 $artifact_id,
