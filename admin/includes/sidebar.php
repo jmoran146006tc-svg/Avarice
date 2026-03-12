@@ -41,12 +41,6 @@ function adminNavLink(string $href, string $label, string $current): string {
     </nav>
   </div>
 
-  <div class="admin-sidebar__section">
-    <div class="admin-sidebar__heading">Finance</div>
-    <nav class="admin-nav">
-      <?= adminNavLink('reports.php',   'Sales Reports', $currentPage) ?>
-    </nav>
-  </div>
 
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">System</div>
