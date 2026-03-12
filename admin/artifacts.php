@@ -66,11 +66,13 @@ $csrfToken = generateCSRFToken();
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="admin-page-header">
-    <h1>Artifacts</h1>
-    <p>Manage, verify, and review all artifacts on the platform.</p>
+<div class="admin-page-header flex-between">
+    <div>
+        <h1>Artifacts</h1>
+        <p>Manage, verify, and review all artifacts on the platform.</p>
+    </div>
+    <a href="add-artifact.php" class="btn btn-gold">+ Add Artifact</a>
 </div>
-
 <?php if ($message): ?>
     <div class="alert alert-<?php echo $messageType; ?>"><?php echo htmlspecialchars($message); ?></div>
 <?php endif; ?>
