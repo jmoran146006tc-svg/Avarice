@@ -1366,6 +1366,7 @@ tr:hover td {
         left: 0;
         right: 0;,
         z-index: 1001;
+        padding: 1rem;
         background: #0a0a0f;
         background-color: var(--bg-primary);
         flex-direction: column;
