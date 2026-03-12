@@ -1,166 +1,156 @@
+
 <?php
 /**
- * Avaritia Admin — Artifacts Management
+ * Avaritia Admin — Flagged Items
  */
-$pageTitle = 'Manage Artifacts';
+$pageTitle = 'Flagged Items';
 require_once __DIR__ . '/../includes/auth.php';
 requireAdmin();
 
 $db = getDB();
 
-// Handle actions
 $message = '';
 $messageType = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
-        $message = 'Invalid request. Please try again.';
-        $messageType = 'error';
-    } else {
-        $action = $_POST['action'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && validateCSRFToken($_POST['csrf_token'] ?? '')) {
+    $action = $_POST['action'] ?? '';
+    $flagId = (int)($_POST['flag_id'] ?? 0);
 
-        if ($action === 'verify') {
-            $stmt = $db->prepare("UPDATE artifacts SET is_verified = 1 WHERE artifact_id = ?");
-            $stmt->execute([$_POST['artifact_id']]);
-            $message = 'Artifact verified successfully.';
-            $messageType = 'success';
-        } elseif ($action === 'flag') {
-            $artifactId = (int)$_POST['artifact_id'];
-            $db->prepare("UPDATE artifacts SET is_flagged = 1 WHERE artifact_id = ?")
-               ->execute([$artifactId]);
-            $db->prepare("
-                INSERT INTO flagged_items (item_type, item_id, flag_reason, severity, flagged_by, status, created_at)
-                VALUES ('artifact', ?, 'Manually flagged by admin', 'medium', ?, 'pending', NOW())
-            ")->execute([$artifactId, getCurrentUserId()]);
-            $message = 'Artifact flagged for review.';
-            $messageType = 'warning';
-        } elseif ($action === 'delete') {
-            $stmt = $db->prepare("DELETE FROM artifacts WHERE artifact_id = ?");
-            $stmt->execute([$_POST['artifact_id']]);
-            $message = 'Artifact deleted.';
-            $messageType = 'success';
-        }
+    if ($action === 'review') {
+        $stmt = $db->prepare("UPDATE flagged_items SET status = 'reviewed' WHERE flag_id = ?");
+        $stmt->execute([$flagId]);
+        $message = 'Item marked as reviewed.';
+        $messageType = 'success';
+    } elseif ($action === 'action') {
+        $stmt = $db->prepare("UPDATE flagged_items SET status = 'actioned', notes = ? WHERE flag_id = ?");
+        $stmt->execute([$_POST['notes'] ?? 'Action taken by admin.', $flagId]);
+        $message = 'Action taken on flagged item.';
+        $messageType = 'success';
+    } elseif ($action === 'dismiss') {
+        $stmt = $db->prepare("UPDATE flagged_items SET status = 'dismissed' WHERE flag_id = ?");
+        $stmt->execute([$flagId]);
+        $message = 'Flag dismissed.';
+        $messageType = 'success';
     }
 }
 
-// Filters
-$filter = $_GET['filter'] ?? 'all';
-$search = $_GET['search'] ?? '';
-
-$where = [];
+$filter = $_GET['status'] ?? 'all';
+$where = '';
 $params = [];
 
-if ($filter === 'verified') { $where[] = 'a.is_verified = 1'; }
-elseif ($filter === 'unverified') { $where[] = 'a.is_verified = 0'; }
-elseif ($filter === 'flagged') { $where[] = 'a.is_flagged = 1'; }
-
-if ($search) {
-    $where[] = "(a.title LIKE ? OR a.origin LIKE ?)";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
+if (in_array($filter, ['pending', 'reviewed', 'actioned', 'dismissed'])) {
+    $where = 'WHERE fi.status = ?';
+    $params = [$filter];
 }
 
-$whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
-
-$stmt = $db->prepare("SELECT a.*, u.username AS added_by_name FROM artifacts a JOIN users u ON a.added_by = u.user_id $whereClause ORDER BY a.created_at DESC");
+$stmt = $db->prepare("
+    SELECT fi.*, u.username AS flagged_by_name
+    FROM flagged_items fi
+    LEFT JOIN users u ON fi.flagged_by = u.user_id
+    $where ORDER BY fi.created_at DESC
+");
 $stmt->execute($params);
-$artifacts = $stmt->fetchAll();
+$flaggedItems = $stmt->fetchAll();
 
 $csrfToken = generateCSRFToken();
-
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="admin-page-header flex-between">
-    <div>
-        <h1>Artifacts</h1>
-        <p>Manage, verify, and review all artifacts on the platform.</p>
-    </div>
-    <a href="add-artifact.php" class="btn btn-gold">+ Add Artifact</a>
+<div class="admin-page-header">
+    <h1>Flagged Items</h1>
+    <p>Review items automatically or manually flagged for suspicious activity.</p>
 </div>
 
 <?php if ($message): ?>
     <div class="alert alert-<?php echo $messageType; ?>"><?php echo htmlspecialchars($message); ?></div>
 <?php endif; ?>
 
-<!-- Filters -->
-<div class="flex-between mb-2 flex-wrap gap-1">
-    <div class="flex gap-1">
-        <a href="?filter=all" class="btn <?php echo $filter === 'all' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">All</a>
-        <a href="?filter=verified" class="btn <?php echo $filter === 'verified' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">Verified</a>
-        <a href="?filter=unverified" class="btn <?php echo $filter === 'unverified' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">Unverified</a>
-        <a href="?filter=flagged" class="btn <?php echo $filter === 'flagged' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">Flagged</a>
-    </div>
-    <form method="GET" class="flex gap-1">
-        <input type="hidden" name="filter" value="<?php echo htmlspecialchars($filter); ?>">
-        <input type="text" name="search" class="form-control" placeholder="Search artifacts..." value="<?php echo htmlspecialchars($search); ?>" style="max-width: 250px;">
-        <button type="submit" class="btn btn-outline btn-sm">Search</button>
-    </form>
+<div class="flex gap-1 mb-2">
+    <a href="?status=all" class="btn <?php echo $filter === 'all' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">All</a>
+    <a href="?status=pending" class="btn <?php echo $filter === 'pending' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">Pending</a>
+    <a href="?status=reviewed" class="btn <?php echo $filter === 'reviewed' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">Reviewed</a>
+    <a href="?status=actioned" class="btn <?php echo $filter === 'actioned' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">Actioned</a>
+    <a href="?status=dismissed" class="btn <?php echo $filter === 'dismissed' ? 'btn-gold' : 'btn-ghost'; ?> btn-sm">Dismissed</a>
 </div>
 
-<!-- Artifacts Table -->
 <div class="table-container">
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Origin</th>
-                <th>Era</th>
-                <th>Condition</th>
-                <th>Added By</th>
+                <th>Type</th>
+                <th>Item ID</th>
+                <th>Reason</th>
+                <th>Severity</th>
+                <th>Flagged By</th>
                 <th>Status</th>
+                <th>Date</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            <?php if (empty($artifacts)): ?>
-                <tr><td colspan="9" class="text-center text-muted" style="padding:2rem;">No artifacts found.</td></tr>
+            <?php if (empty($flaggedItems)): ?>
+                <tr><td colspan="9" class="text-center text-muted" style="padding:2rem;">No flagged items found.</td></tr>
             <?php else: ?>
-                <?php foreach ($artifacts as $artifact): ?>
+                <?php foreach ($flaggedItems as $item): ?>
                 <tr>
-                    <td>#<?php echo $artifact['artifact_id']; ?></td>
-                    <td><strong><?php echo htmlspecialchars($artifact['title']); ?></strong></td>
-                    <td><span class="badge badge-info"><?php echo ucfirst($artifact['category']); ?></span></td>
-                    <td><?php echo htmlspecialchars($artifact['origin'] ?? '—'); ?></td>
-                    <td><?php echo htmlspecialchars($artifact['era'] ?? '—'); ?></td>
-                    <td><?php echo ucfirst($artifact['condition_rating']); ?></td>
-                    <td><?php echo htmlspecialchars($artifact['added_by_name']); ?></td>
+                    <td>#<?php echo $item['flag_id']; ?></td>
+                    <td><span class="badge badge-info"><?php echo ucfirst($item['item_type']); ?></span></td>
+                    <td>#<?php echo $item['item_id']; ?></td>
+                    <td><?php echo htmlspecialchars($item['flag_reason']); ?></td>
                     <td>
-                        <?php if ($artifact['is_flagged']): ?>
-                            <span class="badge badge-critical">Flagged</span>
-                        <?php elseif ($artifact['is_verified']): ?>
-                            <span class="badge badge-active">Verified</span>
-                        <?php else: ?>
-                            <span class="badge badge-pending">Unverified</span>
-                        <?php endif; ?>
+                        <?php
+                        $sevClass = match($item['severity']) {
+                            'low' => 'badge-active',
+                            'medium' => 'badge-pending',
+                            'high' => 'badge-critical',
+                            'critical' => 'badge-critical',
+                            default => 'badge-info'
+                        };
+                        ?>
+                        <span class="badge <?php echo $sevClass; ?>"><?php echo ucfirst($item['severity']); ?></span>
                     </td>
+                    <td><?php echo htmlspecialchars($item['flagged_by_name'] ?? 'System'); ?></td>
                     <td>
+                        <?php
+                        $statusClass = match($item['status']) {
+                            'pending' => 'badge-pending',
+                            'reviewed' => 'badge-info',
+                            'actioned' => 'badge-active',
+                            'dismissed' => 'badge-closed',
+                            default => 'badge-info'
+                        };
+                        ?>
+                        <span class="badge <?php echo $statusClass; ?>"><?php echo ucfirst($item['status']); ?></span>
+                    </td>
+                    <td><?php echo date('M j, Y', strtotime($item['created_at'])); ?></td>
+                    <td>
+                        <?php if ($item['status'] === 'pending' || $item['status'] === 'reviewed'): ?>
                         <div class="flex gap-1">
-                            <?php if (!$artifact['is_verified']): ?>
+                            <?php if ($item['status'] === 'pending'): ?>
                             <form method="POST" style="display:inline;">
                                 <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                <input type="hidden" name="action" value="verify">
-                                <input type="hidden" name="artifact_id" value="<?php echo $artifact['artifact_id']; ?>">
-                                <button type="submit" class="btn btn-ghost btn-sm">✓ Verify</button>
+                                <input type="hidden" name="action" value="review">
+                                <input type="hidden" name="flag_id" value="<?php echo $item['flag_id']; ?>">
+                                <button class="btn btn-ghost btn-sm">👁 Review</button>
                             </form>
                             <?php endif; ?>
-                            <?php if (!$artifact['is_flagged']): ?>
                             <form method="POST" style="display:inline;">
                                 <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                <input type="hidden" name="action" value="flag">
-                                <input type="hidden" name="artifact_id" value="<?php echo $artifact['artifact_id']; ?>">
-                                <button type="submit" class="btn btn-danger btn-sm">🚩 Flag</button>
+                                <input type="hidden" name="action" value="action">
+                                <input type="hidden" name="flag_id" value="<?php echo $item['flag_id']; ?>">
+                                <button class="btn btn-outline btn-sm">⚡ Action</button>
                             </form>
-                            <?php endif; ?>
-                            <form method="POST" style="display:inline;" onsubmit="return confirmDelete('<?php echo htmlspecialchars($artifact['title']); ?>')">
+                            <form method="POST" style="display:inline;">
                                 <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="artifact_id" value="<?php echo $artifact['artifact_id']; ?>">
-                                <button type="submit" class="btn btn-danger btn-sm">✕</button>
+                                <input type="hidden" name="action" value="dismiss">
+                                <input type="hidden" name="flag_id" value="<?php echo $item['flag_id']; ?>">
+                                <button class="btn btn-danger btn-sm">✕</button>
                             </form>
                         </div>
+                        <?php else: ?>
+                            <span class="text-muted">—</span>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
