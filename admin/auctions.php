@@ -51,9 +51,12 @@ $csrfToken = generateCSRFToken();
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="admin-page-header">
-    <h1>Auctions</h1>
-    <p>Manage all auctions on the platform.</p>
+<div class="admin-page-header flex-between">
+    <div>
+        <h1>Auctions</h1>
+        <p>Manage all auctions on the platform.</p>
+    </div>
+    <a href="add-auction.php" class="btn btn-gold">+ Add Auction</a>
 </div>
 
 <?php if ($message): ?>
