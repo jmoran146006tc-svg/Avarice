@@ -25,8 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = 'Artifact verified successfully.';
             $messageType = 'success';
         } elseif ($action === 'flag') {
-            $stmt = $db->prepare("UPDATE artifacts SET is_flagged = 1 WHERE artifact_id = ?");
-            $stmt->execute([$_POST['artifact_id']]);
+            $artifactId = (int)$_POST['artifact_id'];
+            $db->prepare("UPDATE artifacts SET is_flagged = 1 WHERE artifact_id = ?")
+               ->execute([$artifactId]);
+            $db->prepare("
+                INSERT INTO flagged_items (item_type, item_id, flag_reason, severity, flagged_by, status, created_at)
+                VALUES ('artifact', ?, 'Manually flagged by admin', 'medium', ?, 'pending', NOW())
+            ")->execute([$artifactId, getCurrentUserId()]);
             $message = 'Artifact flagged for review.';
             $messageType = 'warning';
         } elseif ($action === 'delete') {
@@ -73,6 +78,7 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
     <a href="add-artifact.php" class="btn btn-gold">+ Add Artifact</a>
 </div>
+
 <?php if ($message): ?>
     <div class="alert alert-<?php echo $messageType; ?>"><?php echo htmlspecialchars($message); ?></div>
 <?php endif; ?>
