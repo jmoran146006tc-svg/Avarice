@@ -1358,7 +1358,6 @@ tr:hover td {
      .navbar {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        background: rgba(10, 10, 15, 0.97);
     }
     
     .nav-menu {
@@ -1367,8 +1366,9 @@ tr:hover td {
         left: 0;
         right: 0;
         bottom: 0;
-        z-index:  999;
-        background: var(--bg-primary);
+        z-index: 1001;
+        background: #0a0a0f;
+        background-color: var(--bg-primary);
         flex-direction: column;
         align-items: center;
         justify-content: center;
