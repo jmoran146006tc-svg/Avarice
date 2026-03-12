@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Avaritia Admin — Flagged Items
