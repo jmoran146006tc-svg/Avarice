@@ -1364,8 +1364,7 @@ tr:hover td {
         position: fixed;
         top: var(--navbar-height);
         left: 0;
-        right: 0;
-        bottom: 0;
+        right: 0;,
         z-index: 1001;
         background: #0a0a0f;
         background-color: var(--bg-primary);
