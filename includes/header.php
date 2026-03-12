@@ -57,9 +57,6 @@ $isAdminPage = strpos($_SERVER['PHP_SELF'], '/admin/') !== false;
                 <a href="/admin/users.php" class="sidebar-link <?php echo $currentPage === 'users' ? 'active' : ''; ?>">
                      Users
                 </a>
-                <a href="/admin/reports.php" class="sidebar-link <?php echo $currentPage === 'reports' ? 'active' : ''; ?>">
-                     Reports
-                </a>
                 <a href="/admin/flagged.php" class="sidebar-link <?php echo $currentPage === 'flagged' ? 'active' : ''; ?>">
                      Flagged
                 </a>
