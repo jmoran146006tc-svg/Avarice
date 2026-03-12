@@ -28,8 +28,11 @@ function adminNavLink(string $href, string $label, string $current): string {
       <?= adminNavLink('artifacts.php', 'Artifacts',   $currentPage) ?>
       <?= adminNavLink('auctions.php',  'Auctions',    $currentPage) ?>
       <?= adminNavLink('flagged.php',      'Flagged Items', $currentPage) ?>
+    <?= adminNavLink('add-artifact.php', '+ Add Artifact', $currentPage) ?>
+
     </nav>
   </div>
+
 
   <div class="admin-sidebar__section">
     <div class="admin-sidebar__heading">People</div>
