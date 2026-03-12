@@ -1377,6 +1377,7 @@ tr:hover td {
         visibility: hidden;
         transform: translateY(-10px);
         transition: all var(--transition);
+        border-bottom: 6px solid var(--accent-orange);
     }
 
     .nav-menu.show {
